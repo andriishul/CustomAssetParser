@@ -11,18 +11,24 @@ endif()
 
 project ("CustomAssetParser")
 
+
+find_package(Vulkan REQUIRED)
 add_subdirectory(external/assimp)
+add_subdirectory(external/directXTex)
 
-
-add_executable (CustomAssetParser "main.cpp" "ModelWriter.cpp")
-target_link_libraries(CustomAssetParser PRIVATE assimp)
+add_executable (CustomAssetParser "main.cpp" "ModelWriter.cpp" "BcWriter.cpp")
+target_link_libraries(CustomAssetParser PRIVATE assimp DirectXTex Vulkan::Vulkan)
 
 file(GLOB DLL_FILENAME "${CMAKE_BINARY_DIR}/assimp/bin/*.dll")
 
-add_custom_command(
-TARGET CustomAssetParser POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy "${DLL_FILENAME}" "${CMAKE_CURRENT_BINARY_DIR}"
-)
+add_custom_command(TARGET CustomAssetParser POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:assimp>
+        $<TARGET_FILE_DIR:CustomAssetParser>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:DirectXTex>
+        $<TARGET_FILE_DIR:CustomAssetParser>)
+
 message("${DLL_FILENAME}")
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CustomAssetParser PROPERTY CXX_STANDARD 20)

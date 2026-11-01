@@ -1,4 +1,5 @@
 #include "ModelWriter.hpp"
+#include "BcWriter.hpp"
 
 #include <stdexcept>
 
@@ -57,12 +58,22 @@ namespace asset
         for (auto& ch : dst) if (ch == '\\') ch = '/';
     }
     
-    
-    static void copyTextureFile(const std::string& directoryFrom, const std::string& directoryTo, const std::string& file)
+    template<uint32_t N>
+    static void setBcExtension(char (&dst)[N])
     {
-        if (!file[0]) return;
+        if (!dst[0]) return;
+        std::string strDst = dst;
+        strDst = strDst.substr(0, strDst.find(".")) + ".bc";
+
+        strncpy(dst, strDst.data(), N - 1);
+        dst[N - 1] = 0;
+    }
+
+    static void copyTextureFile(const std::string& directoryFrom, const std::string& directoryTo, const std::string& file, texture::Format fmt)
+    {
+        if (!file[0]) return; 
         std::string src = directoryFrom + '/' + file;
-        std::string dst = directoryTo + '/' + file;
+        std::string dst = directoryTo + '/' + file.substr(0, file.find(".")) + ".bc";
         if (!std::filesystem::exists(src) || std::filesystem::exists(dst)) return;
 
         auto lastSlash = dst.find_last_of("/");
@@ -70,7 +81,9 @@ namespace asset
         if(lastSlash != std::string::npos)
             std::filesystem::create_directories(dst.substr(0, lastSlash));
         
-        std::filesystem::copy_file(src, dst);
+        std::wstring ws_src = std::filesystem::path(src).wstring();
+        
+        convertCompressedTo(ws_src.c_str(), dst.c_str(), fmt);
     }
 
     static aiVector3D sampleVec3(const aiVectorKey* keys, uint32_t n, double time, const aiVector3D& fallback)
@@ -604,11 +617,20 @@ namespace asset
 
         for (auto& mat : m_ModelData->materials) 
         {
-            copyTextureFile(m_ModelData->path, folderName, mat.albedoPath);
-            copyTextureFile(m_ModelData->path, folderName, mat.normalPath);
-            copyTextureFile(m_ModelData->path, folderName, mat.mrPath);
-            copyTextureFile(m_ModelData->path, folderName, mat.emissivePath);
+            copyTextureFile(m_ModelData->path, folderName, mat.albedoPath, texture::Format::BC7_SRGB_BLOCK);
+            copyTextureFile(m_ModelData->path, folderName, mat.normalPath, texture::Format::BC7_UNORM_BLOCK);
+            copyTextureFile(m_ModelData->path, folderName, mat.mrPath, texture::Format::BC7_UNORM_BLOCK);
+            copyTextureFile(m_ModelData->path, folderName, mat.emissivePath, texture::Format::BC7_SRGB_BLOCK);
         }
+
+        for (auto& mat : m_ModelData->materials)
+        {
+            setBcExtension(mat.albedoPath);
+            setBcExtension(mat.normalPath);
+            setBcExtension(mat.mrPath);
+            setBcExtension(mat.emissivePath);
+        }
+
 
         std::ofstream out(modelFileName, std::ios::binary | std::ios::out);
 

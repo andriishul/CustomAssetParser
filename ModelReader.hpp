@@ -1,10 +1,7 @@
 #pragma once
 #include "ModelFormat.hpp"
 
-#include <fstream>
-#include <string>
-#include <vector>
-
+#include "BcTextureReader.hpp"
 
 
 namespace asset
