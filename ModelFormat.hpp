@@ -5,7 +5,7 @@ namespace asset
 {
     constexpr uint32_t MODEL_MAGIC = 0x4C444F4D;
     
-    constexpr uint32_t MAX_STRING_LENGTH = 64;
+    constexpr uint32_t MAX_STRING_LENGTH = 64U;
 
     /*
         1. AssetHeader

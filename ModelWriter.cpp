@@ -63,7 +63,7 @@ namespace asset
     {
         if (!dst[0]) return;
         std::string strDst = dst;
-        strDst = strDst.substr(0, strDst.find(".")) + ".bc";
+        strDst = strDst.substr(0, strDst.find_last_of(".")) + ".bc";
 
         strncpy(dst, strDst.data(), N - 1);
         dst[N - 1] = 0;
@@ -73,7 +73,7 @@ namespace asset
     {
         if (!file[0]) return; 
         std::string src = directoryFrom + '/' + file;
-        std::string dst = directoryTo + '/' + file.substr(0, file.find(".")) + ".bc";
+        std::string dst = directoryTo + '/' + file.substr(0, file.find_last_of(".")) + ".bc";
         if (!std::filesystem::exists(src) || std::filesystem::exists(dst)) return;
 
         auto lastSlash = dst.find_last_of("/");

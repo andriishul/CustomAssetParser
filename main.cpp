@@ -11,7 +11,7 @@ using namespace std;
 int main()
 {
 	std::cout << "Highly recommend resizing textures after parsing to <= 2048x2048 so " 
-		<< "CopyContext does not hit its limit. For normal maps, 1024x1024 or even 512x512 is "
+		<< "For normal maps, 1024x1024 or even 512x512 is "
 		<< "usually sufficient.\n";
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
@@ -29,17 +29,17 @@ int main()
 	
 		std::string Ins[] =
 		{
-			"C:/Users/vulka/Documents/3D_Models/readonly/macabre_gargoyle_statue/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/electric_floor_lamp/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/graveyard_angel_statue/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/japanese_house/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/pelter_-_artillery_mech/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/robot/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/robot_police_unit_animated/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/steampunk_robot/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/stone_floor/Untitled.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/stone_wall_scan/scene.gltf",
-			"C:/Users/vulka/Documents/3D_Models/readonly/wooden_floor/scene.gltf"
+			"C:/Users/X/Documents/3D_Models/readonly/macabre_gargoyle_statue/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/electric_floor_lamp/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/graveyard_angel_statue/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/japanese_house/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/pelter_-_artillery_mech/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/robot/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/robot_police_unit_animated/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/steampunk_robot/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/stone_floor/Untitled.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/stone_wall_scan/scene.gltf",
+			"C:/Users/X/Documents/3D_Models/readonly/wooden_floor/scene.gltf"
 		};
 
 		const std::string Outs[] =
@@ -58,12 +58,12 @@ int main()
 		};
 
 
-		for (uint32_t i = 0; i < 11; ++i) 
+		for (uint32_t i = 0; i < std::size(Outs); ++i)
 		{
 			asset::ModelWriter writer(Ins[i], Outs[i]);
 			writer();
 
-			lookFor = Outs[i] + "/" + Outs[i] + ".model";
+			lookFor = Outs[i] + '/' + Outs[i] + ".model";
 			asset::ModelReader reader;
 			reader(lookFor);
 		}
